@@ -125,7 +125,17 @@ const Table = ({
         },
       }}
       {...props}
-      getRowId={getRowId || ((row) => row.id || row.MaHS || row.MaHD || row.MaKH || row.MaXe)}
+      getRowId={(row) => {
+        // Try custom getRowId first
+        if (getRowId) {
+          const customId = getRowId(row);
+          if (customId !== undefined && customId !== null) {
+            return customId;
+          }
+        }
+        // Fallback to common ID fields
+        return row.id || row.MaHS || row.MaHD || row.MaKH || row.MaXe || row.MaGoiBaoHiem || row.MaNV || JSON.stringify(row);
+      }}
     />
   );
 };

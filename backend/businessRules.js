@@ -54,13 +54,17 @@ function calculateRiskScore(vehicle, driver) {
     score += 1;
   }
   
-  // Loại xe
-  if (vehicle.loaiXe === 'Truck' || vehicle.loaiXe === 'Bus') {
-    score += 5; // Giảm từ 6 → 5
+  // Loại xe (theo MaTranThamDinh)
+  if (vehicle.loaiXe === 'Xe thể thao') {
+    score += 4; // Tốc độ cao, rủi ro tai nạn cao
+  } else if (vehicle.loaiXe === 'Bán tải') {
+    score += 2; // Thường dùng địa hình khó, rủi ro cao
   } else if (vehicle.loaiXe === 'SUV') {
-    score += 3; // Giảm từ 4 → 3
+    score += 1; // Xe lớn, chi phí sửa chữa cao hơn
+  } else if (vehicle.loaiXe === 'Sedan') {
+    score -= 1; // Xe sedan, ít rủi ro
   } else {
-    score += 2;
+    score += 2; // Default cho loại xe khác
   }
   
   // Giá trị xe
@@ -163,8 +167,8 @@ function validateVehicle(vehicle) {
     throw new Error('Giá trị xe phải lớn hơn 0');
   }
   
-  // Validate loại xe
-  const validTypes = ['Sedan', 'SUV', 'Truck', 'Bus', 'Van', 'Motorcycle'];
+  // Validate loại xe (theo MaTranThamDinh)
+  const validTypes = ['Sedan', 'SUV', 'Bán tải', 'Xe thể thao'];
   if (!vehicle.LoaiXe || !validTypes.includes(vehicle.LoaiXe)) {
     throw new Error(`Loại xe không hợp lệ. Phải là một trong: ${validTypes.join(', ')}`);
   }

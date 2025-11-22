@@ -66,19 +66,34 @@ class PDFReportService {
    * Set font cho document
    */
   setFont(doc, style = 'regular') {
-    if (this.hasCustomFont) {
-      switch(style) {
-        case 'bold':
-          doc.font(this.boldFont);
-          break;
-        case 'italic':
-          doc.font(this.italicFont);
-          break;
-        default:
-          doc.font(this.regularFont);
+    try {
+      if (this.hasCustomFont) {
+        switch(style) {
+          case 'bold':
+            doc.font(this.boldFont);
+            break;
+          case 'italic':
+            doc.font(this.italicFont);
+            break;
+          default:
+            doc.font(this.regularFont);
+        }
+      } else {
+        // Fallback to Helvetica
+        switch(style) {
+          case 'bold':
+            doc.font('Helvetica-Bold');
+            break;
+          case 'italic':
+            doc.font('Helvetica-Oblique');
+            break;
+          default:
+            doc.font('Helvetica');
+        }
       }
-    } else {
-      // Fallback to Helvetica
+    } catch (err) {
+      // If custom font fails, fallback to Helvetica
+      console.warn('⚠️  Font loading error, falling back to Helvetica:', err.message);
       switch(style) {
         case 'bold':
           doc.font('Helvetica-Bold');

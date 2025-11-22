@@ -31,7 +31,9 @@ import reportService from '../../../services/reportService';
 const RenewalReport = () => {
   const [filters, setFilters] = useState({
     fromDate: dayjs().subtract(30, 'day'),
-    toDate: dayjs()
+    toDate: dayjs(),
+    year: dayjs().year(), // Add default year
+    timeType: 'month' // Add default timeType
   });
 
   const [reportData, setReportData] = useState({
@@ -251,13 +253,23 @@ const RenewalReport = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {reportData.reasonsNotRenewed.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{item.reason}</TableCell>
-                    <TableCell align="right">{item.count}</TableCell>
-                    <TableCell align="right">{item.percentage}%</TableCell>
+                {reportData.reasonsNotRenewed && reportData.reasonsNotRenewed.length > 0 ? (
+                  reportData.reasonsNotRenewed.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{item?.reason || 'N/A'}</TableCell>
+                      <TableCell align="right">{item?.count || 0}</TableCell>
+                      <TableCell align="right">{item?.percentage || 0}%</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={3} align="center">
+                      <Typography variant="body2" color="text.secondary">
+                        Không có dữ liệu
+                      </Typography>
+                    </TableCell>
                   </TableRow>
-                ))}
+                )}
                 <TableRow>
                   <TableCell><strong>Tổng cộng</strong></TableCell>
                   <TableCell align="right"><strong>{reportData.notRenewed}</strong></TableCell>
@@ -311,7 +323,7 @@ const RenewalReport = () => {
             - Tỷ lệ tái tục đạt {reportData.renewalRate}%, đạt mục tiêu kế hoạch đề ra.
           </Typography>
           <Typography variant="body2" paragraph sx={{ pl: 2 }}>
-            - Lý do chính khách hàng không tái tục là chuyển sang nhà bảo hiểm khác ({reportData.reasonsNotRenewed[0].percentage}%).
+            - Lý do chính khách hàng không tái tục là {reportData.reasonsNotRenewed?.[0]?.reason || 'chưa xác định'} ({reportData.reasonsNotRenewed?.[0]?.percentage || 0}%).
           </Typography>
 
           <Typography variant="body2" paragraph sx={{ mt: 2 }}>
